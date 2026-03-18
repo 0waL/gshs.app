@@ -175,6 +175,7 @@ export async function maybeRunScheduledBackup() {
     const [days, last] = await Promise.all([getBackupIntervalDays(), getLastBackupAt()]);
     const due = !last || Date.now() - last.getTime() >= days * 24 * 60 * 60 * 1000;
     if (!due) return;
+    if (!fssync.existsSync(DB_PATH)) return; // DB 없으면 스케줄 백업 스킵
     await createBackup("scheduled");
     await setLastBackupAt(new Date());
   } finally {
