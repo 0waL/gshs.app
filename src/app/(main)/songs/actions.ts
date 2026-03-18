@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/session";
 import { getUserGrade } from "@/lib/grade-utils";
 import { logAction } from "@/lib/logger";
-import { getSongTimeRanges, isBreakTime } from "@/lib/date-utils";
+import { getSongTimeRanges, isBreakTime, getKSTDate } from "@/lib/date-utils";
 
 export async function requestSong(formData: FormData) {
   // 0. Time Restriction Check (05:00 ~ 07:00)
@@ -29,7 +29,7 @@ export async function requestSong(formData: FormData) {
 
   // 2. Quota Check (Skip for Admin)
   if (dbUser.role !== 'ADMIN') {
-    const todayDay = new Date().getDay();
+    const todayDay = getKSTDate().getDay();
     const rule = await prisma.songRule.findFirst({
       where: { dayOfWeek: todayDay }
     });
