@@ -55,6 +55,9 @@ export function SongRequestForm({ isEligible, gradeDescription, canEdit }: Props
             <li>신청 가능 시간: <span className="font-bold">매일 07:00 ~ 익일 05:00</span></li>
             <li>05:00 ~ 07:00 사이에는 신청이 제한됩니다.</li>
             <li>어제 신청 승인된 곡은 오늘 아침에, 오늘 신청한 곡은 내일 아침에 방송됩니다.</li>
+            {!isEditing && editValue && (
+              <li>학년별 신청 일정: {editValue}</li>
+            )}
           </ul>
 
           {isEditing ? (
@@ -96,10 +99,6 @@ export function SongRequestForm({ isEligible, gradeDescription, canEdit }: Props
                 </button>
               </div>
             </div>
-          ) : editValue ? (
-            <li className="font-medium" style={{ color: "var(--accent)" }}>
-              학년별 신청 일정: {editValue}
-            </li>
           ) : null}
         </div>
       </div>
