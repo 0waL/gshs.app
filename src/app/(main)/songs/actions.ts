@@ -70,6 +70,19 @@ export async function requestSong(formData: FormData) {
   revalidatePath("/songs");
 }
 
+export async function updateGradeDescription(description: string) {
+  const user = await getCurrentUser();
+  if (!user || (user.role !== 'BROADCAST' && user.role !== 'ADMIN')) {
+    throw new Error("Unauthorized");
+  }
+  await prisma.systemSetting.upsert({
+    where: { key: "SONG_GRADE_DESCRIPTION" },
+    update: { value: description },
+    create: { key: "SONG_GRADE_DESCRIPTION", value: description, description: "기상곡 신청 학년별 일정 안내 텍스트" },
+  });
+  revalidatePath("/songs");
+}
+
 export async function getTodayMorningSongs() {
   const { todayMorning } = getSongTimeRanges();
 

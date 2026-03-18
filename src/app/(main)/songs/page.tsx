@@ -4,6 +4,9 @@ import { SongRequestForm } from "./request-form";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
+import { prisma } from "@/lib/db";
+import { getKSTDate } from "@/lib/date-utils";
+import { getUserGrade } from "@/lib/grade-utils";
 
 export const metadata: Metadata = {
   title: "기상곡 신청",
@@ -14,8 +17,28 @@ export default async function SongsPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const todaySongs = await getTodayMorningSongs();
-  const nextSongs = await getNextMorningSongs();
+  const todayDay = getKSTDate().getDay();
+
+  const [todaySongs, nextSongs, dbUser, rule, gradeDescSetting] = await Promise.all([
+    getTodayMorningSongs(),
+    getNextMorningSongs(),
+    prisma.user.findUnique({ where: { id: user.id! } }),
+    prisma.songRule.findFirst({ where: { dayOfWeek: todayDay } }),
+    prisma.systemSetting.findUnique({ where: { key: "SONG_GRADE_DESCRIPTION" } }),
+  ]);
+
+  let isEligible = true;
+  if (user.role !== 'ADMIN' && rule && rule.allowedGrade !== 'ALL') {
+    let grade = await getUserGrade(dbUser?.gisu ?? null);
+    if (!grade && dbUser?.studentId && dbUser.studentId.length >= 3) {
+      grade = dbUser.studentId.substring(0, 1);
+    }
+    const allowedGrades = rule.allowedGrade.split(',');
+    isEligible = !!grade && allowedGrades.includes(grade);
+  }
+
+  const gradeDescription = gradeDescSetting?.value ?? "";
+  const canEdit = user.role === 'BROADCAST' || user.role === 'ADMIN';
 
   return (
     <div className="mobile-page mobile-safe-bottom space-y-8">
@@ -28,7 +51,7 @@ export default async function SongsPage() {
         </div>
       </div>
 
-      <SongRequestForm />
+      <SongRequestForm isEligible={isEligible} gradeDescription={gradeDescription} canEdit={canEdit} />
 
       <div className="space-y-8">
         <div className="space-y-4">
