@@ -97,9 +97,9 @@ export function SongRequestForm({ isEligible, gradeDescription, canEdit }: Props
               </div>
             </div>
           ) : editValue ? (
-            <p className="pt-1 text-xs font-medium" style={{ color: "var(--accent)" }}>
-              📅 학년별 신청 일정: {editValue}
-            </p>
+            <li className="font-medium" style={{ color: "var(--accent)" }}>
+              학년별 신청 일정: {editValue}
+            </li>
           ) : null}
         </div>
       </div>
