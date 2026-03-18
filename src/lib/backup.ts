@@ -62,6 +62,10 @@ export async function createBackup(reason = "manual") {
   const file = `backup-${stamp}.tar.gz`;
   const target = path.join(BACKUP_DIR, file);
 
+  if (!fssync.existsSync(DB_PATH)) {
+    throw new Error(`DB 파일을 찾을 수 없습니다: ${DB_PATH}\nDATABASE_URL 환경변수를 확인하세요.`);
+  }
+
   const extraPaths = await getExtraPaths();
   const includeRel = [relFromRoot(DB_PATH), ...extraPaths.map(relFromRoot)].filter(Boolean);
 
