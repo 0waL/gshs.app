@@ -3,6 +3,7 @@ import { Bell } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { Metadata } from "next";
 import { NotificationItem } from "./notification-item";
+import { DeleteReadButton } from "./delete-read-button";
 
 export const metadata: Metadata = {
     title: "알림",
@@ -37,14 +38,17 @@ export default async function NotificationsPage() {
 
     return (
         <div className="mobile-page mobile-safe-bottom space-y-6 max-w-2xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full text-indigo-600">
-                    <Bell className="w-6 h-6" />
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full text-indigo-600">
+                        <Bell className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">알림 센터</h1>
+                        <p className="text-slate-500">새로운 소식을 확인하세요.</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">알림 센터</h1>
-                    <p className="text-slate-500">새로운 소식을 확인하세요.</p>
-                </div>
+                {notifications.some(n => n.isRead) && <DeleteReadButton />}
             </div>
 
             <div className="space-y-3">
