@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/db";
 import { createRelatedSite, deleteRelatedSite } from "./actions";
-import { Trash2, ExternalLink, Plus } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { EditSiteButton } from "./edit-site-modal";
 
 export default async function AdminSitesPage() {
     const user = await getCurrentUser();
@@ -13,7 +14,7 @@ export default async function AdminSitesPage() {
     });
 
     return (
-        <div className="space-y-8">
+        <div className="mobile-page mobile-safe-bottom space-y-8 max-w-4xl mx-auto">
             <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-white">교내 사이트 관리</h1>
                 <p className="text-slate-500">교내 연계 사이트 목록을 관리합니다.</p>
@@ -70,12 +71,15 @@ export default async function AdminSitesPage() {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <form action={deleteRelatedSite}>
-                                        <input type="hidden" name="id" value={site.id} />
-                                        <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </form>
+                                    <div className="flex items-center gap-1">
+                                        <EditSiteButton site={{ id: site.id, name: site.name, url: site.url, description: site.description }} />
+                                        <form action={deleteRelatedSite}>
+                                            <input type="hidden" name="id" value={site.id} />
+                                            <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

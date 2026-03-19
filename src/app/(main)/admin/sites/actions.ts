@@ -32,6 +32,30 @@ export async function createRelatedSite(formData: FormData) {
     revalidatePath("/admin/sites");
 }
 
+export async function updateRelatedSite(formData: FormData) {
+    const user = await getCurrentUser();
+    if (!user || user.role !== 'ADMIN') {
+        throw new Error("Unauthorized");
+    }
+
+    const id = formData.get("id") as string;
+    const name = formData.get("name") as string;
+    let url = formData.get("url") as string;
+    const description = formData.get("description") as string;
+
+    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
+        url = `https://${url}`;
+    }
+
+    await prisma.relatedSite.update({
+        where: { id },
+        data: { name, url, description },
+    });
+
+    revalidatePath("/sites");
+    revalidatePath("/admin/sites");
+}
+
 export async function deleteRelatedSite(formData: FormData) {
     const id = formData.get("id") as string;
     const user = await getCurrentUser();
