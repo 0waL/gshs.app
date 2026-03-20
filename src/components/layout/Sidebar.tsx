@@ -18,7 +18,7 @@ export async function Sidebar() {
       </div>
 
       {/* Navigation Area */}
-      <div className="flex-1 flex flex-col gap-1 px-4">
+      <div className="flex-1 flex flex-col gap-1 px-4 overflow-y-auto">
         <SidebarNav />
 
         {(user?.role === "BROADCAST" || user?.role === "ADMIN") && (
