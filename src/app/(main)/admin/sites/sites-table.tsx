@@ -37,43 +37,63 @@ function SortableRow({ site }: { site: Site }) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
+    zIndex: isDragging ? 1 : undefined,
+    position: isDragging ? ("relative" as const) : undefined,
   };
 
   return (
-    <tr ref={setNodeRef} style={style} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
-      <td className="px-3 py-4">
-        <button
-          className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 touch-none"
-          {...attributes}
-          {...listeners}
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors text-sm"
+    >
+      {/* Drag handle */}
+      <button
+        className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 touch-none flex-shrink-0 p-1"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+
+      {/* Name */}
+      <div className="flex-1 min-w-0">
+        <div className="font-medium truncate">{site.name}</div>
+        {site.description && (
+          <div className="text-xs text-slate-400 truncate">{site.description}</div>
+        )}
+      </div>
+
+      {/* URL */}
+      <div className="w-40 hidden md:block">
+        <a
+          href={site.url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500 underline text-xs truncate block"
         >
-          <GripVertical className="w-4 h-4" />
-        </button>
-      </td>
-      <td className="px-6 py-4 font-medium">
-        <div>{site.name}</div>
-        <div className="text-xs text-slate-400">{site.description}</div>
-      </td>
-      <td className="px-6 py-4 text-blue-500 underline truncate max-w-[200px]">
-        <a href={site.url} target="_blank" rel="noreferrer">{site.url}</a>
-      </td>
-      <td className="px-6 py-4">
+          {site.url}
+        </a>
+      </div>
+
+      {/* Category */}
+      <div className="w-28 hidden sm:block">
         <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs">
           {site.category}
         </span>
-      </td>
-      <td className="px-6 py-4">
-        <div className="flex items-center gap-1">
-          <EditSiteButton site={{ id: site.id, name: site.name, url: site.url, description: site.description }} />
-          <form action={deleteRelatedSite}>
-            <input type="hidden" name="id" value={site.id} />
-            <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
-      </td>
-    </tr>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <EditSiteButton site={{ id: site.id, name: site.name, url: site.url, description: site.description }} />
+        <form action={deleteRelatedSite}>
+          <input type="hidden" name="id" value={site.id} />
+          <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 
@@ -97,32 +117,28 @@ export function SitesTable({ initialSites }: { initialSites: Site[] }) {
     await reorderRelatedSites(newSites.map((s) => s.id));
   }
 
+  if (sites.length === 0) {
+    return (
+      <div className="px-6 py-12 text-center text-slate-400">
+        등록된 사이트가 없습니다.
+      </div>
+    );
+  }
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={sites.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-        <table className="w-full text-sm text-left">
-          <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-medium">
-            <tr>
-              <th className="px-3 py-4 w-10"></th>
-              <th className="px-6 py-4">이름</th>
-              <th className="px-6 py-4">URL</th>
-              <th className="px-6 py-4">카테고리</th>
-              <th className="px-6 py-4">관리</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {sites.map((site) => (
-              <SortableRow key={site.id} site={site} />
-            ))}
-            {sites.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
-                  등록된 사이트가 없습니다.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        {/* Header */}
+        <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-medium text-sm border-b border-slate-100 dark:border-slate-800">
+          <div className="w-6 flex-shrink-0" />
+          <div className="flex-1">이름</div>
+          <div className="w-40 hidden md:block">URL</div>
+          <div className="w-28 hidden sm:block">카테고리</div>
+          <div className="w-20">관리</div>
+        </div>
+        {sites.map((site) => (
+          <SortableRow key={site.id} site={site} />
+        ))}
       </SortableContext>
     </DndContext>
   );
