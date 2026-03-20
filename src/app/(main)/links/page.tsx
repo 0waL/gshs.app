@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { createLink } from "./actions";
-import { Link as LinkIcon, Plus } from "lucide-react";
+import { Link as LinkIcon } from "lucide-react";
 import { LinkCard } from "./link-card";
+import { AddLinkModal } from "./add-link-modal";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
@@ -33,6 +33,7 @@ export default async function LinksPage() {
                 <p style={{ color: "var(--muted)" }}>유용한 사이트 링크를 모아두었습니다.</p>
              </div>
           </div>
+          {canEdit && <AddLinkModal />}
        </div>
 
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -47,24 +48,6 @@ export default async function LinksPage() {
           )}
        </div>
 
-       {canEdit && (
-          <div className="glass p-6 rounded-3xl border-t-4 mt-8" style={{ borderColor: "var(--accent)" }}>
-             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Plus className="w-5 h-5" />
-                새 링크 추가 (관리자/선생님 전용)
-             </h3>
-             <form action={createLink} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="title" placeholder="사이트 이름" required className="px-4 py-3 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)", color: "var(--foreground)" }} />
-                <input name="url" placeholder="URL (https://...)" required className="px-4 py-3 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)", color: "var(--foreground)" }} />
-                {/* Hidden category input with default value */}
-                <input type="hidden" name="category" value="GENERAL" />
-                <input name="description" placeholder="간단한 설명" className="md:col-span-2 px-4 py-3 rounded-xl border" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)", color: "var(--foreground)" }} />
-                <button className="md:col-span-2 py-3 font-bold rounded-xl transition-colors" style={{ backgroundColor: "var(--accent)", color: "var(--brand-sub)" }}>
-                   추가하기
-                </button>
-             </form>
-          </div>
-       )}
     </div>
   )
 }
