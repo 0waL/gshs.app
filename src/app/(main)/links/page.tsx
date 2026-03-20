@@ -18,7 +18,7 @@ export default async function LinksPage() {
   const canEdit = user.role === 'TEACHER' || user.role === 'ADMIN';
 
   const links = await prisma.linkItem.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { order: "asc" },
   });
 
   return (
@@ -37,8 +37,8 @@ export default async function LinksPage() {
        </div>
 
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {links.map((link) => (
-             <LinkCard key={link.id} link={link} canEdit={canEdit} />
+          {links.map((link, i) => (
+             <LinkCard key={link.id} link={link} canEdit={canEdit} isFirst={i === 0} isLast={i === links.length - 1} />
           ))}
           
           {links.length === 0 && (

@@ -19,12 +19,16 @@ export async function createLink(formData: FormData) {
     url = `https://${url}`;
   }
 
+  const maxOrder = await prisma.linkItem.aggregate({ _max: { order: true } });
+  const nextOrder = (maxOrder._max.order ?? -1) + 1;
+
   await prisma.linkItem.create({
     data: {
       title,
       url,
       description,
       category,
+      order: nextOrder,
     },
   });
 
@@ -56,6 +60,29 @@ export async function updateLink(formData: FormData) {
       category,
     },
   });
+
+  revalidatePath("/links");
+}
+
+export async function moveLink(id: string, direction: "up" | "down") {
+  const user = await getCurrentUser();
+  if (!user || (user.role !== 'TEACHER' && user.role !== 'ADMIN')) {
+    throw new Error("Unauthorized");
+  }
+
+  const all = await prisma.linkItem.findMany({ orderBy: { order: "asc" } });
+  const idx = all.findIndex((l) => l.id === id);
+  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+
+  if (swapIdx < 0 || swapIdx >= all.length) return;
+
+  const a = all[idx];
+  const b = all[swapIdx];
+
+  await prisma.$transaction([
+    prisma.linkItem.update({ where: { id: a.id }, data: { order: b.order } }),
+    prisma.linkItem.update({ where: { id: b.id }, data: { order: a.order } }),
+  ]);
 
   revalidatePath("/links");
 }

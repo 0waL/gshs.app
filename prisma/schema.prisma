@@ -135,6 +135,7 @@ model LinkItem {
   url         String
   description String?
   category    String   @default("GENERAL") // LEARNING, SCHOOL, EXTERNAL
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
 }
 
