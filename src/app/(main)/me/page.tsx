@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 
-import { Settings, Calendar, Music, Plus, Trash2, Star } from "lucide-react";
+import { Settings, Calendar, Music, Plus, Trash2, Star, LogOut } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { createDDay, deleteDDay, setPrimaryDDay, deleteSongRequest } from "./actions";
@@ -114,6 +114,15 @@ export default async function MyPage() {
              </div>
         </div>
         
+        <a
+            href="/logout?next=/login"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border font-medium text-sm transition-colors"
+            style={{ borderColor: "var(--border)", color: "var(--muted)" }}
+        >
+            <LogOut className="w-4 h-4" />
+            로그아웃
+        </a>
+
         <div className="text-center text-xs text-slate-400 pb-20">
             GSHS.app v1.2.0
         </div>
