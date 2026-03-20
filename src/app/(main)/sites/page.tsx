@@ -1,9 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import dynamic from "next/dynamic";
+import { SitesGrid } from "./sites-grid";
 import { Metadata } from "next";
-
-const SitesGrid = dynamic(() => import("./sites-grid").then((m) => m.SitesGrid), { ssr: false });
 
 export const metadata: Metadata = {
     title: "교내 사이트",
