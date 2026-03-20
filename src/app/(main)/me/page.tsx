@@ -116,7 +116,7 @@ export default async function MyPage() {
         
         <a
             href="/logout?next=/login"
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border font-medium text-sm transition-colors"
+            className="md:hidden flex items-center justify-center gap-2 w-full py-3 rounded-2xl border font-medium text-sm transition-colors"
             style={{ borderColor: "var(--border)", color: "var(--muted)" }}
         >
             <LogOut className="w-4 h-4" />
