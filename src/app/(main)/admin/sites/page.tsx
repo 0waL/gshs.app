@@ -1,23 +1,23 @@
 import { prisma } from "@/lib/db";
-import { createRelatedSite, deleteRelatedSite } from "./actions";
-import { Trash2, Plus } from "lucide-react";
+import { createRelatedSite } from "./actions";
+import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { EditSiteButton } from "./edit-site-modal";
+import { SitesTable } from "./sites-table";
 
 export default async function AdminSitesPage() {
     const user = await getCurrentUser();
     if (!user || user.role !== 'ADMIN') redirect("/");
 
     const sites = await prisma.relatedSite.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: { order: "asc" },
     });
 
     return (
         <div className="mobile-page mobile-safe-bottom space-y-8 max-w-4xl mx-auto">
             <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-white">교내 사이트 관리</h1>
-                <p className="text-slate-500">교내 연계 사이트 목록을 관리합니다.</p>
+                <p className="text-slate-500">교내 연계 사이트 목록을 관리합니다. 드래그하여 순서를 변경할 수 있습니다.</p>
             </div>
 
             {/* Create Form */}
@@ -44,54 +44,9 @@ export default async function AdminSitesPage() {
                 </form>
             </div>
 
-            {/* List */}
+            {/* Sortable List */}
             <div className="glass rounded-3xl overflow-hidden">
-                <table className="w-full text-sm text-left">
-                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-medium">
-                        <tr>
-                            <th className="px-6 py-4">이름</th>
-                            <th className="px-6 py-4">URL</th>
-                            <th className="px-6 py-4">카테고리</th>
-                            <th className="px-6 py-4">관리</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                        {sites.map((site) => (
-                            <tr key={site.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
-                                <td className="px-6 py-4 font-medium">
-                                    <div>{site.name}</div>
-                                    <div className="text-xs text-slate-400">{site.description}</div>
-                                </td>
-                                <td className="px-6 py-4 text-blue-500 underline truncate max-w-[200px]">
-                                    <a href={site.url} target="_blank" rel="noreferrer">{site.url}</a>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs">
-                                        {site.category}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-1">
-                                        <EditSiteButton site={{ id: site.id, name: site.name, url: site.url, description: site.description }} />
-                                        <form action={deleteRelatedSite}>
-                                            <input type="hidden" name="id" value={site.id} />
-                                            <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {sites.length === 0 && (
-                            <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
-                                    등록된 사이트가 없습니다.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                <SitesTable initialSites={sites} />
             </div>
         </div>
     );

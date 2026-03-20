@@ -145,6 +145,7 @@ model RelatedSite {
   url         String
   category    String   // OFFICIAL(학교), CLUB(동아리), COMMUNITY(커뮤니티)
   description String?
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
 }
 

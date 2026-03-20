@@ -56,6 +56,22 @@ export async function updateRelatedSite(formData: FormData) {
     revalidatePath("/admin/sites");
 }
 
+export async function reorderRelatedSites(ids: string[]) {
+    const user = await getCurrentUser();
+    if (!user || user.role !== 'ADMIN') {
+        throw new Error("Unauthorized");
+    }
+
+    await Promise.all(
+        ids.map((id, index) =>
+            prisma.relatedSite.update({ where: { id }, data: { order: index } })
+        )
+    );
+
+    revalidatePath("/sites");
+    revalidatePath("/admin/sites");
+}
+
 export async function deleteRelatedSite(formData: FormData) {
     const id = formData.get("id") as string;
     const user = await getCurrentUser();

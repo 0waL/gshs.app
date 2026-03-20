@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default async function SitesPage() {
     const sites = await prisma.relatedSite.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: { order: "asc" },
     });
 
     // Group by category
