@@ -56,7 +56,7 @@ export function SongRequestForm({ isEligible, gradeDescription, canEdit }: Props
             <li>05:00 ~ 07:00 사이에는 신청이 제한됩니다.</li>
             <li>어제 신청 승인된 곡은 오늘 아침에, 오늘 신청한 곡은 내일 아침에 방송됩니다.</li>
             {!isEditing && editValue && (
-              <li>학년별 신청 일정: {editValue}</li>
+              <li>{editValue}</li>
             )}
           </ul>
 
