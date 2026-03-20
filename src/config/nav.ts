@@ -21,8 +21,11 @@ export const allNavItems = [
   { name: "내 정보", href: "/me", icon: User },
 ];
 
+// Desktop sidebar items (excludes 내 정보 — accessible via user card at the bottom)
+export const sidebarNavItems = allNavItems.filter((item) => item.href !== "/me");
+
 // Keep for backward compatibility
-export const mainNavItems = allNavItems;
+export const mainNavItems = sidebarNavItems;
 
 // Bottom nav now uses primary + menu button
 export const bottomNavItems = primaryNavItems;
