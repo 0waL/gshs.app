@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { Link as LinkIcon } from "lucide-react";
-import { LinksGrid } from "./links-grid";
+import dynamic from "next/dynamic";
 import { AddLinkModal } from "./add-link-modal";
+
+const LinksGrid = dynamic(() => import("./links-grid").then((m) => m.LinksGrid), { ssr: false });
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
