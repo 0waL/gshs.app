@@ -64,6 +64,21 @@ export async function updateLink(formData: FormData) {
   revalidatePath("/links");
 }
 
+export async function reorderLinks(orderedIds: string[]) {
+  const user = await getCurrentUser();
+  if (!user || (user.role !== 'TEACHER' && user.role !== 'ADMIN')) {
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.$transaction(
+    orderedIds.map((id, index) =>
+      prisma.linkItem.update({ where: { id }, data: { order: index } })
+    )
+  );
+
+  revalidatePath("/links");
+}
+
 export async function moveLink(id: string, direction: "up" | "down") {
   const user = await getCurrentUser();
   if (!user || (user.role !== 'TEACHER' && user.role !== 'ADMIN')) {

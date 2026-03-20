@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react";
-import { ExternalLink, Trash2, Edit2, Save, X, ChevronUp, ChevronDown } from "lucide-react";
-import { updateLink, deleteLink, moveLink } from "./actions";
+import { ExternalLink, Trash2, Edit2, Save, X } from "lucide-react";
+import { updateLink, deleteLink } from "./actions";
 
 interface LinkItem {
   id: string;
@@ -12,7 +12,7 @@ interface LinkItem {
   category: string;
 }
 
-export function LinkCard({ link, canEdit, isFirst, isLast }: { link: LinkItem, canEdit: boolean, isFirst: boolean, isLast: boolean }) {
+export function LinkCard({ link, canEdit }: { link: LinkItem, canEdit: boolean }) {
   const [isEditing, setIsEditing] = useState(false);
 
   if (isEditing) {
@@ -60,28 +60,19 @@ export function LinkCard({ link, canEdit, isFirst, isLast }: { link: LinkItem, c
         {canEdit && (
             <div className="relative z-20 flex justify-end gap-2 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                 <button
-                    onClick={() => moveLink(link.id, "up")}
-                    disabled={isFirst}
-                    className="tap-target p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors disabled:opacity-30 disabled:pointer-events-none"
-                >
-                    <ChevronUp className="w-4 h-4" />
-                </button>
-                <button
-                    onClick={() => moveLink(link.id, "down")}
-                    disabled={isLast}
-                    className="tap-target p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors disabled:opacity-30 disabled:pointer-events-none"
-                >
-                    <ChevronDown className="w-4 h-4" />
-                </button>
-                <button
                     onClick={() => setIsEditing(true)}
+                    onPointerDown={(e) => e.stopPropagation()}
                     className="tap-target p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
                 >
                     <Edit2 className="w-4 h-4" />
                 </button>
-                <form action={deleteLink}>
+                <form action={deleteLink} onSubmit={(e) => e.stopPropagation()}>
                     <input type="hidden" name="id" value={link.id} />
-                    <button type="submit" className="tap-target p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
+                    <button
+                        type="submit"
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="tap-target p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors"
+                    >
                         <Trash2 className="w-4 h-4" />
                     </button>
                 </form>

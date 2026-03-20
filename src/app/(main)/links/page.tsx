@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { Link as LinkIcon } from "lucide-react";
-import { LinkCard } from "./link-card";
+import { LinksGrid } from "./links-grid";
 import { AddLinkModal } from "./add-link-modal";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
@@ -36,17 +36,7 @@ export default async function LinksPage() {
           {canEdit && <AddLinkModal />}
        </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {links.map((link, i) => (
-             <LinkCard key={link.id} link={link} canEdit={canEdit} isFirst={i === 0} isLast={i === links.length - 1} />
-          ))}
-          
-          {links.length === 0 && (
-              <div className="col-span-full py-12 text-center glass rounded-3xl" style={{ color: "var(--muted)" }}>
-                  등록된 링크가 없습니다.
-              </div>
-          )}
-       </div>
+       <LinksGrid initialLinks={links} canEdit={canEdit} />
 
     </div>
   )
