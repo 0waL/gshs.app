@@ -3,8 +3,6 @@ import { getCurrentUser } from "@/lib/session";
 import { SidebarNav } from "./SidebarNav";
 import { ShieldCheck, Radio } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
-import { LogoutButton } from "@/components/auth/logout-button";
-
 
 export async function Sidebar() {
   const user = await getCurrentUser();
@@ -59,7 +57,6 @@ export async function Sidebar() {
                 <div className="text-xs truncate" style={{ color: "var(--muted)" }}>{user.studentId || user.email}</div>
               </div>
             </Link>
-            <LogoutButton />
           </div>
         ) : (
           <Link href="/login" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-colors font-medium"
