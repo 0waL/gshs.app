@@ -3,7 +3,9 @@ import { createRelatedSite } from "./actions";
 import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { SitesTable } from "./sites-table";
+import dynamic from "next/dynamic";
+
+const SitesTable = dynamic(() => import("./sites-table").then((m) => m.SitesTable), { ssr: false });
 
 export default async function AdminSitesPage() {
     const user = await getCurrentUser();
