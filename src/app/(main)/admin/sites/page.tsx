@@ -3,7 +3,7 @@ import { createRelatedSite } from "./actions";
 import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { SitesTable } from "./sites-table";
+import { SitesTableWrapper } from "./sites-table-wrapper";
 
 export default async function AdminSitesPage() {
     const user = await getCurrentUser();
@@ -46,7 +46,7 @@ export default async function AdminSitesPage() {
 
             {/* Sortable List */}
             <div className="glass rounded-3xl overflow-hidden">
-                <SitesTable initialSites={sites} />
+                <SitesTableWrapper initialSites={sites} />
             </div>
         </div>
     );
