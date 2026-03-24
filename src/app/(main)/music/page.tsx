@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
-import { Check, Music as MusicIcon, Play, Settings } from "lucide-react";
+import { startOfDay } from "date-fns";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { Check, Music as MusicIcon, Play, Settings, History, ChevronLeft } from "lucide-react";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
@@ -20,18 +22,43 @@ export const metadata: Metadata = {
 };
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+const SEOUL_TZ = "Asia/Seoul";
 
-export default async function MusicManagerPage() {
+function getTodayStartUTC() {
+  const nowKST = toZonedTime(new Date(), SEOUL_TZ);
+  const kstMidnight = startOfDay(nowKST);
+  return fromZonedTime(kstMidnight, SEOUL_TZ);
+}
+
+export default async function MusicManagerPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ history?: string }>;
+}) {
   const user = await getCurrentUser();
   if (!user || (user.role !== "BROADCAST" && user.role !== "ADMIN")) {
     redirect("/");
   }
 
-  const songs = await prisma.songRequest.findMany({
-    orderBy: [{ priorityScore: "desc" }, { createdAt: "asc" }],
-    include: { requester: true },
-    where: { status: { not: "PLAYED" } },
-  });
+  const { history } = await searchParams;
+  const showHistory = history === "1";
+
+  const todayStartUTC = getTodayStartUTC();
+
+  const songs = showHistory
+    ? await prisma.songRequest.findMany({
+        orderBy: { createdAt: "desc" },
+        include: { requester: true },
+        where: { createdAt: { lt: todayStartUTC } },
+      })
+    : await prisma.songRequest.findMany({
+        orderBy: [{ priorityScore: "desc" }, { createdAt: "asc" }],
+        include: { requester: true },
+        where: {
+          createdAt: { gte: todayStartUTC },
+          status: { not: "PLAYED" },
+        },
+      });
 
   const rules = await prisma.songRule.findMany();
   const ruleRows = DAYS.map((day, idx) => ({
@@ -59,12 +86,45 @@ export default async function MusicManagerPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <span>현재 신청 목록</span>
-            <span className="text-xs font-normal" style={{ color: "var(--muted)" }}>
-              (우선순위 순 정렬)
-            </span>
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              {showHistory ? (
+                <>
+                  <History className="w-5 h-5" />
+                  <span>이전 신청 기록</span>
+                  <span className="text-xs font-normal" style={{ color: "var(--muted)" }}>
+                    (최신순)
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>현재 신청 목록</span>
+                  <span className="text-xs font-normal" style={{ color: "var(--muted)" }}>
+                    (우선순위 순 정렬)
+                  </span>
+                </>
+              )}
+            </h2>
+            {showHistory ? (
+              <a
+                href="/music"
+                className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+                style={{ backgroundColor: "var(--surface-2)", color: "var(--foreground)" }}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                오늘 신청곡 보기
+              </a>
+            ) : (
+              <a
+                href="/music?history=1"
+                className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+                style={{ backgroundColor: "var(--surface-2)", color: "var(--muted)" }}
+              >
+                <History className="w-4 h-4" />
+                이전에 신청했던 곡 보기
+              </a>
+            )}
+          </div>
 
           <div className="glass rounded-3xl overflow-hidden">
             <div className="md:hidden p-3 space-y-3">
@@ -76,9 +136,11 @@ export default async function MusicManagerPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <div className="text-xs font-mono" style={{ color: "var(--muted)" }}>
-                        점수 {song.priorityScore}
-                      </div>
+                      {!showHistory && (
+                        <div className="text-xs font-mono" style={{ color: "var(--muted)" }}>
+                          점수 {song.priorityScore}
+                        </div>
+                      )}
                       <div className="font-medium truncate">{song.videoTitle}</div>
                     </div>
                     <div className="text-right text-xs" style={{ color: "var(--muted)" }}>
@@ -150,13 +212,19 @@ export default async function MusicManagerPage() {
                         <BanUserButton userId={song.requester.id} userName={song.requester.name} />
                       </div>
                     )}
+
+                    {song.status === "PLAYED" && (
+                      <span className="text-xs font-bold" style={{ color: "var(--muted)" }}>
+                        재생됨
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
 
               {songs.length === 0 && (
                 <div className="p-8 text-center" style={{ color: "var(--muted)" }}>
-                  대기 중인 신청곡이 없습니다.
+                  {showHistory ? "이전 신청 기록이 없습니다." : "대기 중인 신청곡이 없습니다."}
                 </div>
               )}
             </div>
@@ -171,18 +239,21 @@ export default async function MusicManagerPage() {
                 }}
               >
                 <tr>
-                  <th className="p-4">점수</th>
+                  {!showHistory && <th className="p-4">점수</th>}
                   <th className="p-4">곡 정보</th>
                   <th className="p-4">신청자</th>
+                  {showHistory && <th className="p-4">상태</th>}
                   <th className="p-4 text-right">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y [--tw-divide-color:var(--border)]">
                 {songs.map((song) => (
                   <tr key={song.id} className="transition-colors" style={{ backgroundColor: "transparent" }}>
-                    <td className="p-4 font-mono text-xs" style={{ color: "var(--muted)" }}>
-                      {song.priorityScore}
-                    </td>
+                    {!showHistory && (
+                      <td className="p-4 font-mono text-xs" style={{ color: "var(--muted)" }}>
+                        {song.priorityScore}
+                      </td>
+                    )}
                     <td className="p-4 max-w-[240px]">
                       <div className="font-medium truncate">{song.videoTitle}</div>
                       <a
@@ -206,6 +277,29 @@ export default async function MusicManagerPage() {
                         {format(song.createdAt, "MM.dd HH:mm")}
                       </div>
                     </td>
+                    {showHistory && (
+                      <td className="p-4">
+                        <span
+                          className={`px-2 py-1 rounded-md text-xs font-bold ${
+                            song.status === "PENDING"
+                              ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                              : song.status === "APPROVED"
+                                ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                : song.status === "REJECTED"
+                                  ? "bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400"
+                                  : "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                          }`}
+                        >
+                          {song.status === "PENDING"
+                            ? "대기중"
+                            : song.status === "APPROVED"
+                              ? "승인됨"
+                              : song.status === "REJECTED"
+                                ? "반려됨"
+                                : "재생됨"}
+                        </span>
+                      </td>
+                    )}
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-1">
                         {song.status === "PENDING" && (
@@ -244,6 +338,12 @@ export default async function MusicManagerPage() {
                             <BanUserButton userId={song.requester.id} userName={song.requester.name} />
                           </div>
                         )}
+
+                        {song.status === "PLAYED" && (
+                          <span className="text-xs font-bold py-2 px-1" style={{ color: "var(--muted)" }}>
+                            재생됨
+                          </span>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -253,7 +353,7 @@ export default async function MusicManagerPage() {
 
             {songs.length === 0 && (
               <div className="hidden md:block p-12 text-center" style={{ color: "var(--muted)" }}>
-                대기 중인 신청곡이 없습니다.
+                {showHistory ? "이전 신청 기록이 없습니다." : "대기 중인 신청곡이 없습니다."}
               </div>
             )}
           </div>
