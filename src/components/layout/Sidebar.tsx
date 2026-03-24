@@ -89,7 +89,7 @@ export function Sidebar({
 
       {/* Nav */}
       <div className="mt-5 flex-1 overflow-y-auto pr-1">
-        <SidebarNav onNavigate={isPinned ? undefined : onNavigate} />
+        <SidebarNav onNavigate={isPinned ? undefined : onNavigate} compact={isPinned} />
       </div>
 
       {/* Pin button — bottom-right */}

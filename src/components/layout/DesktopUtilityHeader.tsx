@@ -235,14 +235,16 @@ export function DesktopUtilityHeader({
               </button>
             )}
 
-            <Link
-              href="/"
-              data-testid="desktop-header-brand"
-              className="shrink-0 text-lg font-semibold tracking-[-0.04em]"
-              style={{ color: "var(--foreground)" }}
-            >
-              GSHS.app
-            </Link>
+            {!isSidebarPinned && (
+              <Link
+                href="/"
+                data-testid="desktop-header-brand"
+                className="shrink-0 text-lg font-semibold tracking-[-0.04em]"
+                style={{ color: "var(--foreground)" }}
+              >
+                GSHS.app
+              </Link>
+            )}
 
             {isHome ? (
               <div
