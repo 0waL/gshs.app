@@ -254,4 +254,12 @@ body {
   .btn-semantic {
     cursor: pointer;
   }
+
+  /* Pinned sidebar: shift main content on desktop only */
+  @media (min-width: 768px) {
+    .sidebar-pinned-content {
+      margin-left: var(--pinned-sidebar-w, 0px);
+      transition: margin-left 200ms ease;
+    }
+  }
 }

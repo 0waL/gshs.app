@@ -189,11 +189,13 @@ export function DesktopUtilityHeader({
   isHome,
   homeWeather,
   isSidebarOpen,
+  isSidebarPinned,
   onSidebarToggle,
 }: {
   isHome: boolean;
   homeWeather?: ReactNode;
   isSidebarOpen: boolean;
+  isSidebarPinned: boolean;
   onSidebarToggle: () => void;
 }) {
   const pathname = usePathname();
@@ -214,22 +216,24 @@ export function DesktopUtilityHeader({
       >
         <div className="flex min-h-[3.5rem] items-center justify-between gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-3">
-            <button
-              type="button"
-              data-testid="desktop-sidebar-toggle"
-              aria-label={isSidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
-              aria-controls="desktop-sidebar-drawer"
-              aria-expanded={isSidebarOpen}
-              onClick={onSidebarToggle}
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors"
-              style={{
-                backgroundColor: "color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%)",
-                borderColor: "color-mix(in srgb, var(--border) 75%, var(--accent) 25%)",
-                color: "var(--foreground)",
-              }}
-            >
-              <Menu className="h-5 w-5" />
-            </button>
+            {!isSidebarPinned && (
+              <button
+                type="button"
+                data-testid="desktop-sidebar-toggle"
+                aria-label={isSidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
+                aria-controls="desktop-sidebar-drawer"
+                aria-expanded={isSidebarOpen}
+                onClick={onSidebarToggle}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors"
+                style={{
+                  backgroundColor: "color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%)",
+                  borderColor: "color-mix(in srgb, var(--border) 75%, var(--accent) 25%)",
+                  color: "var(--foreground)",
+                }}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            )}
 
             <Link
               href="/"
