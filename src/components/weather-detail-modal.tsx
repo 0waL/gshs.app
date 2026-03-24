@@ -62,7 +62,7 @@ export function WeatherDetailModal({ weather }: WeatherDetailModalProps) {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-xs rounded-2xl">
                     <DialogHeader>
-                        <DialogTitle className="text-center text-base font-semibold text-slate-700 dark:text-slate-200">
+                        <DialogTitle className="text-center text-base font-semibold text-[var(--foreground)]">
                             오늘의 날씨
                         </DialogTitle>
                     </DialogHeader>
@@ -71,43 +71,43 @@ export function WeatherDetailModal({ weather }: WeatherDetailModalProps) {
                         {/* 현재 날씨 */}
                         <div className="flex flex-col items-center gap-1">
                             {getWeatherIcon(weather.code, "w-12 h-12")}
-                            <span className="text-4xl font-bold text-slate-800 dark:text-slate-100">
+                            <span className="text-4xl font-bold text-[var(--foreground)]">
                                 {weather.temp}°
                             </span>
-                            <span className="text-sm text-slate-500 dark:text-slate-400">
+                            <span className="text-sm text-[var(--muted)]">
                                 {getWeatherDescription(weather.code)}
                             </span>
                         </div>
 
-                        <div className="w-full h-px bg-slate-200 dark:bg-slate-700" />
+                        <div className="w-full h-px bg-[var(--border)]" />
 
                         {/* 상세 정보 */}
                         <div className="w-full grid grid-cols-2 gap-3">
-                            <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl px-3 py-2.5">
+                            <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-500/20 rounded-xl px-3 py-2.5">
                                 <TrendingDown className="w-4 h-4 text-blue-400 shrink-0" />
                                 <div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-400">최저</div>
-                                    <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                    <div className="text-xs text-[var(--muted)]">최저</div>
+                                    <div className="text-sm font-semibold text-[var(--foreground)]">
                                         {weather.minTemp}°
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl px-3 py-2.5">
+                            <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-500/20 rounded-xl px-3 py-2.5">
                                 <TrendingUp className="w-4 h-4 text-orange-400 shrink-0" />
                                 <div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-400">최고</div>
-                                    <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                    <div className="text-xs text-[var(--muted)]">최고</div>
+                                    <div className="text-sm font-semibold text-[var(--foreground)]">
                                         {weather.maxTemp}°
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="col-span-2 flex items-center gap-2 bg-sky-50 dark:bg-sky-900/20 rounded-xl px-3 py-2.5">
+                            <div className="col-span-2 flex items-center gap-2 bg-sky-50 dark:bg-cyan-500/20 rounded-xl px-3 py-2.5">
                                 <Droplets className="w-4 h-4 text-sky-500 shrink-0" />
                                 <div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-400">내일 강수 확률</div>
-                                    <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                    <div className="text-xs text-[var(--muted)]">내일 강수 확률</div>
+                                    <div className="text-sm font-semibold text-[var(--foreground)]">
                                         {weather.tomorrowRainProb !== null ? `${weather.tomorrowRainProb}%` : "-"}
                                     </div>
                                 </div>
