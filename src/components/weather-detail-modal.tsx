@@ -83,7 +83,7 @@ export function WeatherDetailModal({ weather }: WeatherDetailModalProps) {
 
                         {/* 상세 정보 */}
                         <div className="w-full grid grid-cols-2 gap-3">
-                            <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-500/20 rounded-xl px-3 py-2.5">
+                            <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-500/20 rounded-xl px-3 py-2.5">
                                 <TrendingDown className="w-4 h-4 text-blue-400 shrink-0" />
                                 <div>
                                     <div className="text-xs text-[var(--muted)]">최저</div>
@@ -93,7 +93,7 @@ export function WeatherDetailModal({ weather }: WeatherDetailModalProps) {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-500/20 rounded-xl px-3 py-2.5">
+                            <div className="flex items-center gap-2 bg-orange-100 dark:bg-orange-500/20 rounded-xl px-3 py-2.5">
                                 <TrendingUp className="w-4 h-4 text-orange-400 shrink-0" />
                                 <div>
                                     <div className="text-xs text-[var(--muted)]">최고</div>
@@ -103,7 +103,7 @@ export function WeatherDetailModal({ weather }: WeatherDetailModalProps) {
                                 </div>
                             </div>
 
-                            <div className="col-span-2 flex items-center gap-2 bg-sky-50 dark:bg-cyan-500/20 rounded-xl px-3 py-2.5">
+                            <div className="col-span-2 flex items-center gap-2 bg-sky-100 dark:bg-cyan-500/20 rounded-xl px-3 py-2.5">
                                 <Droplets className="w-4 h-4 text-sky-500 shrink-0" />
                                 <div>
                                     <div className="text-xs text-[var(--muted)]">내일 강수 확률</div>
