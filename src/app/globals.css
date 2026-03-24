@@ -226,7 +226,7 @@ body {
     outline-offset: 1px;
   }
 
-  .admin-theme button:not(:disabled),
+  .admin-theme button:not(:disabled):not(.btn-primary):not(.btn-semantic),
   .admin-theme a[role="button"],
   .admin-theme a[class*="bg-"] {
     background: var(--surface-2) !important;
@@ -234,7 +234,7 @@ body {
     border: 1px solid var(--border) !important;
   }
 
-  .admin-theme button:not(:disabled):hover,
+  .admin-theme button:not(:disabled):not(.btn-primary):not(.btn-semantic):hover,
   .admin-theme a[role="button"]:hover,
   .admin-theme a[class*="bg-"]:hover {
     filter: brightness(1.04);
@@ -242,5 +242,16 @@ body {
 
   .admin-theme button:disabled {
     opacity: 0.55;
+  }
+
+  .admin-theme .btn-primary {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 92%, white 8%), var(--accent)) !important;
+    color: var(--brand-sub) !important;
+    border: 1px solid color-mix(in srgb, var(--accent) 88%, black 12%) !important;
+  }
+
+  /* Semantic colored buttons (status actions etc.) — bypass admin-theme override */
+  .btn-semantic {
+    cursor: pointer;
   }
 }
