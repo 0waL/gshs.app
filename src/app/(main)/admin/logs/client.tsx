@@ -23,21 +23,21 @@ export function LogSettingsForm({ initialDays }: { initialDays: number }) {
     return (
         <div className="space-y-4">
             <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-sm font-medium mb-1">
                     로그 보관 기간 (일)
                 </label>
                 <input
                     type="number"
                     value={days}
                     onChange={(e) => setDays(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-900 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 rounded-lg focus:outline-none"
                 />
                 <p className="text-xs text-slate-500 mt-1">이 기간보다 오래된 로그는 자동으로 삭제됩니다.</p>
             </div>
             <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+                className="btn-semantic btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
             >
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 설정 저장
@@ -74,7 +74,7 @@ export function DownloadButton() {
         <button
             onClick={handleDownload}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+            className="btn-semantic flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
         >
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             로그 다운로드 (CSV)
