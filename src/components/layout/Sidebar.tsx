@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
+import { Pin, PinOff, X } from "lucide-react";
 import { Dialog, DialogOverlay, DialogPortal } from "@/components/ui/dialog";
 import { SidebarNav } from "./SidebarNav";
 
@@ -10,9 +10,87 @@ type SidebarProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onNavigate: () => void;
+  isPinned: boolean;
+  onPinToggle: () => void;
 };
 
-export function Sidebar({ open, onOpenChange, onNavigate }: SidebarProps) {
+export function Sidebar({ open, onOpenChange, onNavigate, isPinned, onPinToggle }: SidebarProps) {
+  const sidebarContent = (
+    <aside className="sidebar-shell flex h-full w-full flex-col px-4 py-4">
+      <div className="flex items-center justify-between gap-2 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+        <div className="min-w-0">
+          <Link
+            href="/"
+            onClick={onNavigate}
+            className="block text-[1.7rem] font-bold leading-none tracking-[-0.04em]"
+            style={{ color: "var(--foreground)" }}
+          >
+            GSHS.app
+          </Link>
+          <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
+            원하는 페이지로 빠르게 이동하세요.
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            onClick={onPinToggle}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
+            style={isPinned
+              ? {
+                  backgroundColor: "var(--accent)",
+                  borderColor: "var(--accent)",
+                  color: "var(--brand-sub)",
+                }
+              : {
+                  backgroundColor: "var(--surface-2)",
+                  borderColor: "var(--border)",
+                  color: "var(--foreground)",
+                }
+            }
+            aria-label={isPinned ? "사이드바 고정 해제" : "사이드바 고정"}
+            title={isPinned ? "고정 해제" : "목록 고정"}
+          >
+            {isPinned ? <PinOff className="h-3.5 w-3.5" /> : <Pin className="h-3.5 w-3.5" />}
+          </button>
+          {!isPinned && (
+            <button
+              onClick={() => onOpenChange(false)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
+              style={{
+                backgroundColor: "var(--surface-2)",
+                borderColor: "var(--border)",
+                color: "var(--foreground)",
+              }}
+              aria-label="사이드바 닫기"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-5 flex-1 overflow-y-auto pr-1">
+        <SidebarNav onNavigate={isPinned ? undefined : onNavigate} />
+      </div>
+    </aside>
+  );
+
+  if (isPinned) {
+    return (
+      <div
+        id="desktop-sidebar-drawer"
+        data-testid="desktop-sidebar-drawer"
+        className="fixed inset-y-0 left-0 z-[70] hidden w-[18rem] border-r md:flex"
+        style={{
+          backgroundColor: "color-mix(in srgb, var(--surface) 96%, transparent)",
+          borderColor: "var(--border)",
+        }}
+      >
+        {sidebarContent}
+      </div>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
@@ -35,38 +113,7 @@ export function Sidebar({ open, onOpenChange, onNavigate }: SidebarProps) {
           <DialogPrimitive.Description className="sr-only">
             주요 페이지로 이동할 수 있는 데스크톱용 네비게이션 메뉴입니다.
           </DialogPrimitive.Description>
-          <aside className="sidebar-shell flex h-full w-full flex-col px-4 py-4">
-            <div className="flex items-center justify-between gap-3 border-b pb-4" style={{ borderColor: "var(--border)" }}>
-              <div className="min-w-0">
-                <Link
-                  href="/"
-                  onClick={onNavigate}
-                  className="block text-[1.7rem] font-bold leading-none tracking-[-0.04em]"
-                  style={{ color: "var(--foreground)" }}
-                >
-                  GSHS.app
-                </Link>
-                <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
-                  원하는 페이지로 빠르게 이동하세요.
-                </p>
-              </div>
-              <DialogPrimitive.Close
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors"
-                style={{
-                  backgroundColor: "var(--surface-2)",
-                  borderColor: "var(--border)",
-                  color: "var(--foreground)",
-                }}
-                aria-label="사이드바 닫기"
-              >
-                <X className="h-4 w-4" />
-              </DialogPrimitive.Close>
-            </div>
-
-            <div className="mt-5 flex-1 overflow-y-auto pr-1">
-              <SidebarNav onNavigate={onNavigate} />
-            </div>
-          </aside>
+          {sidebarContent}
         </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>
