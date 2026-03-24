@@ -27,7 +27,7 @@ export function SidebarNav({
             className={cn(
               "sidebar-nav-link flex w-full items-center rounded-xl border font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]",
               compact
-                ? "min-h-8 gap-2.5 px-3 py-1.5 text-sm"
+                ? "min-h-10 gap-2.5 px-3 py-1.5 text-sm"
                 : "min-h-11 gap-3 px-3.5 py-2.5 text-sm",
               isActive ? "" : "hover:bg-[color:var(--surface-2)]"
             )}
