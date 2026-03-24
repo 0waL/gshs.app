@@ -16,7 +16,7 @@ export function SidebarNav({
   const pathname = usePathname();
 
   return (
-    <nav className={cn("sidebar-nav flex w-full flex-col", compact ? "gap-0.5" : "gap-1.5")}>
+    <nav className={cn("sidebar-nav flex w-full flex-col", compact ? "gap-1" : "gap-1.5")}>
       {mainNavItems.map((item) => {
         const isActive = pathname === item.href;
         return (
