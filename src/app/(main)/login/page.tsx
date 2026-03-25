@@ -9,9 +9,7 @@ export default function LoginPage() {
   const [errorMessage, dispatch, isPending] = useActionState(authenticate, undefined);
 
   return (
-    <div className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-slate-50 p-4 transition-colors dark:bg-slate-950">
-      <div className="pointer-events-none absolute left-[-10%] top-[-10%] h-[40vw] max-h-[500px] w-[40vw] max-w-[500px] rounded-full bg-indigo-500/20 opacity-60 blur-[80px] dark:bg-indigo-600/20 dark:opacity-50" />
-      <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[40vw] max-h-[500px] w-[40vw] max-w-[500px] rounded-full bg-sky-500/20 opacity-60 blur-[80px] dark:bg-sky-600/20 dark:opacity-50" />
+    <div className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden p-4" style={{ backgroundColor: "var(--background)" }}>
 
       <div className="relative z-10 w-full max-w-md rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-xl ring-1 ring-slate-200/60 backdrop-blur-2xl dark:border-slate-800/50 dark:bg-slate-900/70 dark:shadow-2xl dark:ring-white/10 sm:p-8">
         <div className="mb-8 text-center">
